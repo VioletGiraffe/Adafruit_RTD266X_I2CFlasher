@@ -2,7 +2,7 @@
 #include "rtd266x_main.h"
 
 
-static const FlashDesc FlashDevices[] = {
+static const FlashDesc FlashDevices[] PROGMEM = {
     // name,        Jedec ID,    sizeK, page size, block sizeK
     {"AT25DF041A" , 0x1F4401,      512,       256, 64},
     {"AT25DF161"  , 0x1F4602, 2 * 1024,       256, 64},
@@ -28,6 +28,14 @@ static const FlashDesc FlashDevices[] = {
     {"W25X20"     , 0xEF3012,      256,       256, 64},
     {"W25X40"     , 0xEF3013,      512,       256, 64},
     {"W25X80"     , 0xEF3014, 1 * 1024,       256, 64},
+    {"W25X16"     , 0xEF3015,  32 * 64,       256, 64},
+    {"W25X32"     , 0xEF3016,  64 * 64,       256, 64},
+    {"W25X64"     , 0xEF3017, 128 * 64,       256, 64},
+    {"W25Q80"     , 0xEF5014,  16 * 64,       256, 64},
+    {"W25Q80BL"   , 0xEF4014,  16 * 64,       256, 64},
+    {"W25Q16"     , 0xEF4015,  32 * 64,       256, 64},
+    {"W25Q32"     , 0xEF4016,  64 * 64,       256, 64},
+    {"W25Q64"     , 0xEF4017, 128 * 64,       256, 64},
     // Manufacturer: Macronix 
     {"MX25L512"   , 0xC22010,       64,       256, 64},
     {"MX25L3205"  , 0xC22016, 4 * 1024,       256, 64},
@@ -111,14 +119,15 @@ void SPIRead(uint32_t address, uint8_t *data, int32_t len) {
 
 
 
-const FlashDesc* FindChip(uint32_t jedec_id) {
-  const FlashDesc* chip = FlashDevices;
-  while (chip->jedec_id != 0) {
+bool FindChip(uint32_t jedec_id, FlashDesc* chip) {
+  int i = 0;
+  do {
+    memcpy_P(chip, &FlashDevices[i], sizeof(FlashDesc));
     if (chip->jedec_id == jedec_id)
-      return chip;
-    chip++;
-  }
-  return NULL;
+      return true;
+    i++;
+  } while (chip->jedec_id != 0);
+  return false;
 }
 
 

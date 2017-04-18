@@ -33,7 +33,7 @@ uint32_t SPICommonCommand(ECommondCommandType cmd_type,
 bool WriteReg(uint8_t a, uint8_t d);
 uint32_t ReadReg(uint8_t a);
 bool ReadBytesFromAddr(uint8_t reg, uint8_t* dest, uint8_t len);
-const FlashDesc* FindChip(uint32_t jedec_id);
+bool FindChip(uint32_t jedec_id, FlashDesc*);
 uint8_t GetManufacturerId(uint32_t jedec_id);
 void SetupChipCommands(uint32_t jedec_id);
 bool EraseFlash(void);

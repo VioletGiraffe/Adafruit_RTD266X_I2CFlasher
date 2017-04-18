@@ -30,7 +30,8 @@
 #define TWI_FREQ     200000     // only changed on AVR (shrug)
 
 File dataFile;
-const FlashDesc* chip;
+FlashDesc flashDesc;
+FlashDesc* chip = &flashDesc;
 
 void error(char *str) {
   Serial.println(str);
@@ -79,8 +80,7 @@ void setup(void)
     }
     uint32_t jedec_id = SPICommonCommand(E_CC_READ, 0x9f, 3, 0, 0);
     Serial.print(F("JEDEC ID: 0x")); Serial.println(jedec_id, HEX);
-    chip = FindChip(jedec_id);
-    if (NULL == chip) {
+    if (!FindChip(jedec_id, chip)) {
       Serial.println(F("Unknown chip ID"));
     }
     break;
