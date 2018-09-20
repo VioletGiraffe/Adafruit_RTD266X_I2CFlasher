@@ -27,13 +27,15 @@
 #define READNAME "RTDFLASH.BIN"
 
 #define SD_CS        10         // pin connected to SD chip select
+
+#undef TWI_FREQ
 #define TWI_FREQ     200000     // only changed on AVR (shrug)
 
 File dataFile;
 FlashDesc flashDesc;
 FlashDesc* chip = &flashDesc;
 
-void error(char *str) {
+void error(const char *str) {
   Serial.println(str);
   while (1);
 }
@@ -150,7 +152,7 @@ void loop(void)
     }
     Serial.println(F("OK!"));
     dataFile.close();
-    Serial.print(millis() - starttime); Serial.println(" ms");
+    Serial.print(millis() - starttime); Serial.println(F(" ms"));
   }  
 
   if (cmd == 'W') {
@@ -167,7 +169,7 @@ void loop(void)
     Serial.println(F("OK!"));
     dataFile.close();
 
-    Serial.print(millis() - starttime); Serial.println(" ms");
+    Serial.print(millis() - starttime); Serial.println(F(" ms"));
   } 
 }
 
