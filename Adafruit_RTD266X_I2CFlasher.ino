@@ -32,8 +32,7 @@
 #define TWI_FREQ     200000     // only changed on AVR (shrug)
 
 File dataFile;
-FlashDesc flashDesc;
-FlashDesc* chip = &flashDesc;
+FlashDesc chip;
 
 void error(const char *str) {
   Serial.println(str);
@@ -82,14 +81,14 @@ void setup(void)
     }
     uint32_t jedec_id = SPICommonCommand(E_CC_READ, 0x9f, 3, 0, 0);
     Serial.print(F("JEDEC ID: 0x")); Serial.println(jedec_id, HEX);
-    if (!FindChip(jedec_id, chip)) {
+    if (!FindChip(jedec_id, &chip)) {
       Serial.println(F("Unknown chip ID"));
     }
     break;
   }
   
   Serial.print(F("Manufacturer "));
-  uint32_t id = GetManufacturerId(chip->jedec_id);
+  uint32_t id = GetManufacturerId(chip.jedec_id);
   switch (id) {
     case 0x20: Serial.println(F("ST"));         break;
     case 0xef: Serial.println(F("Winbond"));    break;
@@ -99,10 +98,10 @@ void setup(void)
     default:   Serial.println(F("Unknown"));    break;
   }
 
-  Serial.print(F("Chip: "));      Serial.println(chip->device_name);
-  Serial.print(F("Size (KB): ")); Serial.println(chip->size_kb);
+  Serial.print(F("Chip: "));      Serial.println(chip.device_name);
+  Serial.print(F("Size (KB): ")); Serial.println(chip.size_kb);
 
-  SetupChipCommands(chip->jedec_id);
+  SetupChipCommands(chip.jedec_id);
 }
 
 void loop(void) 
@@ -131,7 +130,7 @@ void loop(void)
      }
     
     Serial.println(F("Dumping FLASH to disk"));
-     if (! SaveFlash(&dataFile, chip->size_kb * 1024)) {
+     if (! SaveFlash(&dataFile, chip.size_kb * 1024)) {
       Serial.println(F("**** FAILED ****"));
     }
     Serial.println(F("OK!"));
@@ -163,7 +162,7 @@ void loop(void)
      }
 
     Serial.println(F("Writing FLASH from disk"));
-    if (! ProgramFlash(&dataFile, chip->size_kb * 1024)) {
+    if (! ProgramFlash(&dataFile, chip.size_kb * 1024)) {
       Serial.println(F("**** FAILED ****"));
     }
     Serial.println(F("OK!"));

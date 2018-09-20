@@ -36,7 +36,7 @@ bool ReadBytesFromAddr(uint8_t reg, uint8_t* dest, uint8_t len);
 bool FindChip(uint32_t jedec_id, FlashDesc*);
 uint8_t GetManufacturerId(uint32_t jedec_id);
 void SetupChipCommands(uint32_t jedec_id);
-bool EraseFlash(void);
+void EraseFlash(void);
 bool ProgramFlash(File *f, uint32_t chip_size);
 bool WriteBytesToAddr(uint8_t reg, uint8_t* values, uint8_t len);
 bool VerifyFlash(File *f, uint32_t chip_size);

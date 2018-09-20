@@ -233,7 +233,7 @@ bool ShouldProgramPage(uint8_t* buffer, uint32_t size) {
 }
 
 
-bool EraseFlash(void) {
+void EraseFlash() {
   Serial.println(F("Erasing..."));
   SPICommonCommand(E_CC_WRITE_AFTER_EWSR, 1, 0, 1, 0); // Unprotect the Status Register
   SPICommonCommand(E_CC_WRITE_AFTER_WREN, 1, 0, 1, 0); // Unprotect the flash
