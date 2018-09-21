@@ -56,9 +56,8 @@ void setup(void)
 
 #if defined(__AVR__)
   uint8_t data;
-  if (twi_writeTo(0x4A, &data, 0, 1, 1)) {
-    error("Couldn't find i2c device 0x4A");
-  }
+  Serial.println("Waiting for I2C device 0x4A...");
+  while (twi_writeTo(0x4A, &data, 0, 1, 1));
   Serial.println(F("Found 0x4A"));
 
   TWBR = ((F_CPU / TWI_FREQ) - 16) / 2;
@@ -119,11 +118,17 @@ void loop(void)
     Serial.print(millis() - starttime); Serial.println(F(" ms"));
   }
   
-  if (cmd == 'R') {
+  if (cmd == 'R' || cmd == 'r') {
      // open the file. note that only one file can be open at a time,
      // so you have to close this one before opening another.
      // Open up the file we're going to log to!
-     dataFile = SD.open(F(SAVENAME), FILE_WRITE);
+     if (SD.exists(SAVENAME)) {
+      Serial.println(F("Dump file exists, removing..."));
+      if (!SD.remove(SAVENAME))
+        Serial.println(F("*** Removingthe old file failed. ***"));
+     }
+     
+     dataFile = SD.open(SAVENAME, FILE_WRITE);
      if (! dataFile) {
        Serial.println(F("Error opening file"));
        return;
@@ -140,7 +145,7 @@ void loop(void)
   }
   
   if (cmd == 'V') {
-     dataFile = SD.open(F(READNAME), FILE_READ);
+     dataFile = SD.open(READNAME, FILE_READ);
      if (! dataFile) {
        Serial.println(F("Error opening file"));
        return;
@@ -154,7 +159,7 @@ void loop(void)
     Serial.print(millis() - starttime); Serial.println(F(" ms"));
   }  
 
-  if (cmd == 'W') {
+  if (cmd == 'W' || cmd == 'w') {
      dataFile = SD.open(READNAME, FILE_READ);
      if (! dataFile) {
        Serial.println(F("Error opening file"));
