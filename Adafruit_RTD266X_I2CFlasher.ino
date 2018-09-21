@@ -123,7 +123,7 @@ void loop(void)
      // open the file. note that only one file can be open at a time,
      // so you have to close this one before opening another.
      // Open up the file we're going to log to!
-     dataFile = SD.open(SAVENAME, FILE_WRITE);
+     dataFile = SD.open(F(SAVENAME), FILE_WRITE);
      if (! dataFile) {
        Serial.println(F("Error opening file"));
        return;
@@ -140,7 +140,7 @@ void loop(void)
   }
   
   if (cmd == 'V') {
-     dataFile = SD.open(READNAME, FILE_READ);
+     dataFile = SD.open(F(READNAME), FILE_READ);
      if (! dataFile) {
        Serial.println(F("Error opening file"));
        return;
@@ -171,5 +171,3 @@ void loop(void)
     Serial.print(millis() - starttime); Serial.println(F(" ms"));
   } 
 }
-
-
